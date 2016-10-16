@@ -1,4 +1,8 @@
-all: tokeniser_testing
+all: driver test
 
-tokeniser_testing: tokeniser_testing.cpp dlib/all/source.cpp dlib/cpp_tokenizer.h
-	g++ tokeniser_testing.cpp dlib/all/source.cpp -o tokeniser_testing
+driver: driver.cpp TokenizedFunctionList.hpp dlib/all/source.cpp
+	g++ driver.cpp TokenizedFunctionList.hpp dlib/all/source.cpp -o driver
+
+test: tokeniser_testing.cpp dlib/all/source.cpp
+	g++ tokeniser_testing.cpp dlib/all/source.cpp -o test
+
