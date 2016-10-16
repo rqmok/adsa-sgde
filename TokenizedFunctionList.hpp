@@ -60,7 +60,7 @@ string typeConvert(int type)
 
 // Gets a list of tokens of an entire file, excluding
 // whitespace, comments and EOF.
-vector<string> tokenList(char* filename)
+vector<string> tokenList(char* filename, vector<string>& tokensNamed)
 {
 	cppTok cTok;
 
@@ -100,6 +100,8 @@ vector<string> tokenList(char* filename)
 				{
 					list.push_back(typeConvert(type));
 				}
+
+				tokensNamed.push_back(token);
 			}
 		}
 	}
@@ -110,7 +112,7 @@ vector<string> tokenList(char* filename)
 
 
 // Returns a list of tokenised functions.
-vector< vector<string> > functionList(vector<string> tokens)
+vector< vector<string> > functionList(vector<string> tokens, vector<string>& tokensNamed, vector<string>& funcNames)
 {
 	vector< vector<string> > funcs;
 
@@ -122,6 +124,7 @@ vector< vector<string> > functionList(vector<string> tokens)
 		// Might be the start of a function- look ahead.
 		if (tok == "IDENTIFIER")
 		{
+			string name = tokensNamed[i];
 			if ((i+1<len)&&(tokens[i+1]=="("))
 			{
 				// Put everything between the parentheses in the vector.
@@ -139,7 +142,7 @@ vector< vector<string> > functionList(vector<string> tokens)
 				if ((i+1<len)&&(tokens[i+1]=="{"))
 				{
 					// Put everything between the brackets in the vector.
-					int openBrackets = 1;
+					int openBrackets = 0;
 					for (i=i+1; i<len; i++)
 					{
 						tok = tokens[i];
@@ -154,6 +157,7 @@ vector< vector<string> > functionList(vector<string> tokens)
 						if (openBrackets == 0)
 						{
 							funcs.push_back(subList);
+							funcNames.push_back(name);
 							break;
 						}
 					}
@@ -165,23 +169,31 @@ vector< vector<string> > functionList(vector<string> tokens)
 }
 
 
-vector< vector< vector<string> > > getFunctions(char* file1, char* file2)
+vector< vector< vector<string> > > getFunctions(char* file1, char* file2, vector< vector<string> >& funcNames)
 {
 	// 3D nested vectors:
 	// - A vector which is a list of tokens- a single function.
-	// - A vector storing a list of functions
-	// - A vector storing a list of a list of functions - each element contains
-	// 	the functions of one file.
-	vector< vector<string> > v; // empty
+	// 	- A vector storing a list of functions
+	// 		- A vector storing a list of a list of functions - each element contains
+	// 		the functions of one file.
+	// 
 	vector< vector< vector<string> > > funcList;
 
+	vector<string> names1;
+	vector<string> names2;
+	vector<string>& copy1 = names1;
+	vector<string>& copy2 = names2;
+
 	// Tokenise files
-	vector<string> fileTokens1 = tokenList(file1);
-	vector<string> fileTokens2 = tokenList(file2);
+	vector<string> fileTokens1 = tokenList(file1,names1);
+	vector<string> fileTokens2 = tokenList(file2,names2);
+
+	vector<string>& funcNames1 = funcNames[0];
+	vector<string>& funcNames2 = funcNames[1];
 
 	// Seek functions.
-	funcList.push_back(functionList(fileTokens1));
-	funcList.push_back(functionList(fileTokens2));
+	funcList.push_back(functionList(fileTokens1,names1,funcNames1));
+	funcList.push_back(functionList(fileTokens2,names2,funcNames2));
 
 	return funcList;
 }
