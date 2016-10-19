@@ -1,11 +1,12 @@
 #include "TokenizedFunctionList.hpp"
+#include "MatchingTokens.hpp"
 #include <iostream>
 
 // dummies for testing
-int ZEESHANSFUNCTION(vector<string> v1, vector<string> v2)
+/*int ZEESHANSFUNCTION(vector<string> v1, vector<string> v2)
 {
 	return 1;
-}
+}*/
 
 bool ISCLONE(int matches, int size1,int size2)
 {
@@ -42,15 +43,18 @@ int main(int argc, char* argv[])
 			{
 				for (int l=0; l<v[j].size(); l++)
 				{
+
 					// The function names in caps aren't done yet!
-					int matchingLines = ZEESHANSFUNCTION(v[i][k],v[j][l]);
+					int matchingLines = LCSFunction(v[i][k],v[j][l]);
 					if (ISCLONE(matchingLines,v[i][k].size(),v[j][l].size()))
 					{
-						string name1(argv[i+1]);
+						/*string name1(argv[i+1]);
 						string name2(argv[j+1]);
 						cout << "Function " << functionNames[i][k] << " from file " << name1;
 						cout << ", and function " << functionNames[j][l] << " from file " << name2;
-						cout << " are clones." << endl;
+						cout << " are clones." << endl;*/
+
+						cout << "Matching lines: " << matchingLines << endl;
 					}
 				}
 			}
