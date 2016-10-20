@@ -13,23 +13,30 @@ int searchLCS(vector<string> LCS, vector<string> list)
 		{
 			ret = i;
 
+			int i2 = i;
+
 			// The first element of LCS matches this iteration.
 			// Check if the rest of the elements match as well.
 			for (int j = 0; j < LCS.size(); j++)
 			{
-				if (list.at(i) != LCS.at(j))
+				if (list.at(i2) != LCS.at(j))
 				{
 					break;
 				}
 
-				i++;
-				if (i >= list.size())
+				// If we reach here, all elements match. ////////////////
+				if (j == LCS.size() - 1)
+					return ret;
+
+				i2++;
+				if (i2 >= list.size())
 					return -1;
 			}
 		}
 	}
 
-	return ret;
+	//return ret;
+	return -1;
 }
 
 int LCSFunction(vector<string> list1, vector<string> list2)
@@ -50,6 +57,17 @@ int LCSFunction(vector<string> list1, vector<string> list2)
 	if (LCS.size() == 0)
 		return 0;
 
+	/*//////////////
+	cout << endl << "LCS:" << endl << endl;
+	for (int i=0; i<LCS.size(); i++)
+	{
+		cout << LCS[i] << " ";
+		if (i%4 == 0)
+			cout << endl;
+	}
+
+	cout << endl;*/
+
 	// Get element index for the element before the lcs.
 	int list1Index = searchLCS(LCS, list1);
 
@@ -64,7 +82,7 @@ int LCSFunction(vector<string> list1, vector<string> list2)
 	if (list2Index == -1)
 		return 0;
 
-
+	
 	// Split first vector.
 	vector<string> before_1(list1.begin(), list1.begin() + list1Index);
 	vector<string> after_1((list1.begin() + list1Index) + LCS.size(), list1.end());
@@ -72,7 +90,6 @@ int LCSFunction(vector<string> list1, vector<string> list2)
 	// Split second vector.
 	vector<string> before_2(list2.begin(), list2.begin() + list2Index);
 	vector<string> after_2((list2.begin() + list2Index) + LCS.size(), list2.end());
-
 
 	// Get numbers recursively.
 	int numBefore = LCSFunction(before_1, before_2);
@@ -82,3 +99,4 @@ int LCSFunction(vector<string> list1, vector<string> list2)
 	// Return size of code clone.
 	return numBefore + numAfter + LCS.size();
 }
+
